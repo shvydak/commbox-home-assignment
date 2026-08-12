@@ -1,0 +1,42 @@
+{
+    "name": "commbox-home-assignment",
+    "version": "1.0.0",
+    "description": "Playwright + TypeScript mini test framework for a mocked messaging app (CommBox QA home assignment)",
+    "scripts": {
+        "test": "playwright test",
+        "test:headed": "playwright test --headed",
+        "test:ui": "playwright test --ui",
+        "report": "playwright show-report",
+        "type-check": "tsc --noEmit",
+        "type-check:watch": "tsc --noEmit --watch",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/shvydak/commbox-home-assignment.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/shvydak/commbox-home-assignment/issues"
+    },
+    "homepage": "https://github.com/shvydak/commbox-home-assignment#readme",
+    "engines": {
+        "node": ">=20"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@playwright/test": "^1.62.1",
+        "@types/node": "^26.2.0",
+        "eslint": "^10.8.1",
+        "eslint-plugin-playwright": "^2.11.0",
+        "prettier": "^3.9.6",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.67.0"
+    }
+}

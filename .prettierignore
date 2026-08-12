@@ -1,0 +1,7 @@
+node_modules
+playwright-report
+test-results
+package-lock.json
+
+# Hand-authored fixture app under test — not our source-code style
+app/

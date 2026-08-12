@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "TYPE-CHECK",
+            "type": "shell",
+            "command": "npm run type-check:watch",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "echo": true,
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        }
+    ]
+}

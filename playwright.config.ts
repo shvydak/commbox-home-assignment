@@ -1,0 +1,32 @@
+import {defineConfig, devices} from '@playwright/test'
+
+const PORT = 4173
+
+export default defineConfig({
+    testDir: './e2e/tests',
+    fullyParallel: true,
+    forbidOnly: !!process.env.CI,
+    retries: process.env.CI ? 1 : 0,
+    workers: process.env.CI ? 1 : 4,
+    // README: Playwright's built-in HTML reporter — meets requirement #6 (native
+    // reporter, explicitly listed as an acceptable option) with zero extra service
+    // or account to set up; trace viewer is bundled in for free on top.
+    reporter: [['html', {open: 'never'}], ['list']],
+
+    use: {
+        baseURL: `http://localhost:${PORT}`,
+        trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+    },
+
+    projects: [{name: 'chromium', use: {...devices['Desktop Chrome']}}],
+
+    // Serves app/messaging-app.html — Playwright starts/stops it automatically,
+    // no manual step and no dependency beyond Node itself.
+    webServer: {
+        command: 'node scripts/static-server.js',
+        url: `http://localhost:${PORT}`,
+        reuseExistingServer: !process.env.CI,
+        env: {PORT: String(PORT)},
+    },
+})

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messenger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gradient: linear-gradient(90deg, #4da0ff 0%, #6f36ff 50%, #4da0ff 100%);
+      --text: #101011;
+      --page-bg: #f5f6fa;
+      --card-bg: #ffffff;
+      --bubble-bg: #eef2ff;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--page-bg);
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: var(--text);
+    }
+
+    .chat {
+      width: 380px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(16, 16, 17, 0.08);
+      overflow: hidden;
+    }
+
+    .chat__header {
+      background: var(--gradient);
+      color: #fff;
+      padding: 18px 20px;
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .chat__messages {
+      list-style: none;
+      margin: 0;
+      padding: 16px;
+      min-height: 220px;
+      max-height: 320px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chat__messages:empty::before {
+      content: 'No messages yet';
+      color: #9ca3af;
+      font-size: 13px;
+      align-self: center;
+      margin-top: 90px;
+    }
+
+    .chat__message {
+      align-self: flex-end;
+      max-width: 75%;
+      background: var(--bubble-bg);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 16px 16px 4px 16px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .chat__error {
+      margin: 0 14px 12px;
+      padding: 10px 14px;
+      background: #fef2f2;
+      color: #b91c1c;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .chat__error[hidden] {
+      display: none;
+    }
+
+    .chat__form {
+      display: flex;
+      gap: 8px;
+      padding: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .chat__input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .chat__input:focus {
+      border-color: #6f36ff;
+    }
+
+    .chat__send {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      background: var(--gradient);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .chat__send:hover {
+      opacity: 0.92;
+    }
+
+    .chat__send:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .chat__meta {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 14px 6px;
+    }
+
+    .chat__count {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .chat__count--over {
+      color: #b91c1c;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main class="chat">
+    <header class="chat__header">Messenger</header>
+
+    <ul class="chat__messages" data-testid="message-list" aria-live="polite"></ul>
+
+    <p class="chat__error" data-testid="error-banner" role="alert" hidden></p>
+
+    <div class="chat__meta">
+      <span class="chat__count" data-testid="char-count">0/200</span>
+    </div>
+
+    <form class="chat__form" data-testid="message-form">
+      <input
+        type="text"
+        class="chat__input"
+        data-testid="message-input"
+        placeholder="Type your message..."
+        aria-label="Message"
+      />
+      <button type="submit" class="chat__send" data-testid="send-button" disabled>Send</button>
+    </form>
+  </main>
+
+  <script>
+    const MAX_LENGTH = 200;
+
+    const form = document.querySelector('[data-testid="message-form"]');
+    const input = document.querySelector('[data-testid="message-input"]');
+    const messageList = document.querySelector('[data-testid="message-list"]');
+    const errorBanner = document.querySelector('[data-testid="error-banner"]');
+    const sendButton = document.querySelector('[data-testid="send-button"]');
+    const charCount = document.querySelector('[data-testid="char-count"]');
+
+    function showError() {
+      errorBanner.textContent = 'Failed to send message. Please try again.';
+      errorBanner.hidden = false;
+    }
+
+    // No native maxlength on purpose — typing past the limit must stay possible
+    // so it produces a visible, testable error state instead of silent truncation.
+    function updateSendState() {
+      const overLimit = input.value.length > MAX_LENGTH;
+      sendButton.disabled = input.value.trim().length === 0 || overLimit;
+      charCount.textContent = `${input.value.length}/${MAX_LENGTH}`;
+      charCount.classList.toggle('chat__count--over', overLimit);
+    }
+
+    input.addEventListener('input', updateSendState);
+    updateSendState();
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const message = input.value;
+      if (!message.trim() || message.length > MAX_LENGTH) return;
+
+      errorBanner.hidden = true;
+
+      try {
+        const response = await fetch('/api/send-message', {
+          method: 'POST',
+          body: JSON.stringify({ message }),
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          const li = document.createElement('li');
+          li.className = 'chat__message';
+          li.setAttribute('data-testid', 'message-item');
+          li.textContent = data.message;
+          messageList.appendChild(li);
+          input.value = '';
+          updateSendState();
+        } else {
+          showError();
+        }
+      } catch {
+        showError();
+      }
+    });
+  </script>
+</body>
+</html>
