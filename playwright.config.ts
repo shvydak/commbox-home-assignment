@@ -15,8 +15,12 @@ export default defineConfig({
 
     use: {
         baseURL: `http://localhost:${PORT}`,
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        trace: 'on',
+        screenshot: {
+            mode: 'on',
+            fullPage: true,
+        },
+        video: 'on',
     },
 
     projects: [
