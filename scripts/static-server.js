@@ -1,6 +1,6 @@
-// README: zero-dependency static server: serves app/messaging-app.html for every
-// request. Node built-in `http` only, on purpose — no Python (this repo is Node-only
-// by design, one less thing to install), no npm static-server package, and no manual
+// Zero-dependency static server: serves app/messaging-app.html for every request.
+// Node built-in `http` only, on purpose — no Python (this repo is Node-only by
+// design, one less thing to install), no npm static-server package, and no manual
 // step for whoever runs this: `npx playwright test` starts/stops it via `webServer`
 // in playwright.config.ts. fetch() from a page loaded over file:// is unreliable in
 // Chromium, hence serving over http:// at all.

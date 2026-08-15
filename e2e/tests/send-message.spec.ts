@@ -2,13 +2,6 @@ import {test, expect} from '@playwright/test'
 import {ERROR_BANNER_TEXT, MessagingPage} from '../pages/messaging.page'
 import {mockSendMessageSuccess, mockSendMessageError} from '../mocks/sendMessage.mock'
 
-// README: no testData builder / flow-wrapper / custom fixture / request-wait utility
-// in this suite — each would only have one call site right now (checked against
-// probuild-qa's actual justification for each: reuse across many callers, or
-// non-trivial logic worth sharing). Kept flat on purpose; see "Decisions & reasoning".
-
-// README: expect.soft() everywhere — a failed assertion doesn't stop the test, so one
-// run shows every mismatch at once instead of finding them one re-run at a time.
 test.describe('Send message', () => {
     let messagingPage: MessagingPage
 
@@ -22,10 +15,6 @@ test.describe('Send message', () => {
             await mockSendMessageSuccess(page)
         })
 
-        // README: no contract-check on the outgoing request body here — dropped it.
-        // With this mock's echo-based design (returns whatever `message` it received),
-        // a wrong/missing field would already surface as wrong text in the UI assertion
-        // below, so a separate request-payload check added little for this app.
         test('typed message appears in the list and input clears', async () => {
             const messageText = 'Hey, is anyone there?'
 

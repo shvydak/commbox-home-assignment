@@ -8,9 +8,7 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 1 : 0,
     workers: process.env.CI ? 1 : 4,
-    // README: Playwright's built-in HTML reporter — meets requirement #6 (native
-    // reporter, explicitly listed as an acceptable option) with zero extra service
-    // or account to set up; trace viewer is bundled in for free on top.
+
     reporter: [['html', {open: 'never'}], ['list']],
 
     use: {

@@ -1,11 +1,5 @@
 import {type Page} from '@playwright/test'
 
-// README: no backend exists at all — page.route() intercepts the real fetch() call
-// the app makes and fakes the response, per requirement #4. Kept as standalone
-// exported functions (not class methods, not a fixture) — reused as-is by every
-// describe block that needs a given response shape, nothing more elaborate earns
-// its keep at this test count.
-
 // Simulates the message-send API (no real backend) — echoes the sent text back
 // on success, the same contract the real fetch call in messaging-app.html expects.
 export const mockSendMessageSuccess = async (page: Page) => {
